@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase'; // Adjust path as needed
@@ -27,9 +27,9 @@ function Signup() {
   };
 
   return (
-    <div>
+    <div className="account-page">
       <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={handleSignup} className="account-form">
         <input
           type='email'
           placeholder='Email'
@@ -45,6 +45,7 @@ function Signup() {
         <button type='submit'>Sign Up</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      <p className="account-note">Not a new user? <Link to="/login">Login here</Link></p>
     </div>
   );
 }
