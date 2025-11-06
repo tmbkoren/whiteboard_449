@@ -48,7 +48,7 @@ body {
 
 .auth-links {
   display: flex;
-  flex-direction: column; /* stacked vertically */
+  flex-direction: row; /* stacked vertically */
   gap: 0.25rem;
   align-items: flex-end;
 }
