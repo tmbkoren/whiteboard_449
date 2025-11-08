@@ -1,6 +1,6 @@
 import { Excalidraw } from '@excalidraw/excalidraw';
 import './App.css';
-import ChatSidebar from './components/ChatSidebar';
+import ChatSidebar from './components/ChatSidebar/ChatSidebar';
 import { useState } from 'react';
 
 function App() {

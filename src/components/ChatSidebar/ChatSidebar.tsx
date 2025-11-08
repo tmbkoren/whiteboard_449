@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import './ChatSidebar.css';
-import { auth } from '../firebase';
 
 interface Message {
   id: number;

@@ -1,8 +1,5 @@
-import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth } from '../firebase'; // Adjust path as needed
-import { useState } from 'react';
-import type { FormEvent } from 'react';
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import supabase from '../utils/supabase';
 
 export const Route = createFileRoute('/login')({
   component: Login,
@@ -10,54 +7,37 @@ export const Route = createFileRoute('/login')({
 
 
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+async function Login() {
+  async function loginWithGoogle(e) {
+    e.preventDefault()
+    //const origin = (await headers()).get('origin');
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Redirect to home after successful login
-      navigate({ to: '/' });
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError(String(err));
-      }
-      console.error('Login error:', err);
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `http://localhost:5173/auth/callback`,
+      },
+    });
+
+    console.log('OAuth response:', { data, error });
+
+    if (error) {
+      console.error(error);
+      //throw redirect({ to: '/login' });
     }
-  };
 
+    if (data.url) {
+      console.log('Redirecting to:', data.url);
+      //throw redirect({ to: data.url });
+    }
+  }
   return (
     <div className="account-page">
       <h2>Login</h2>
-      <form onSubmit={handleLogin} className="account-form">
-        <input
-          type='email'
-          placeholder='Email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type='password'
-          placeholder='Password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type='submit'>Login</button>
+      <form onSubmit={loginWithGoogle} className="account-form">
+      
+        <button type='submit'>Login with Google</button>
       </form>
-      {/*<form>
-        <button type='button' onClick={() => signOut(auth)}>
-          Logout
-        </button>
-      </form> */}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <p className="account-note">New user? <Link to="/signup">Sign up here</Link></p>
     </div>
   );
 }

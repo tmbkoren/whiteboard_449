@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.80.0",
     "@tanstack/react-router": "^1.133.27",
     "@tanstack/react-router-devtools": "^1.133.27",
     "firebase": "^12.4.0",
