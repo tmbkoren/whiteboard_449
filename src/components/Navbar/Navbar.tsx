@@ -1,19 +1,17 @@
-import { Link } from '@tanstack/react-router';
-import supabase from '../../utils/supabase';
+import { Link, useRouter } from '@tanstack/react-router';
+import { Route } from '../../routes/__root';
+import { Route as loginRoute } from '../../routes/login';
 import { useEffect, useState } from 'react';
+import supabase from '../../utils/supabase';
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
+  const { session } = Route.useLoaderData();
+  const router = useRouter();
+  const [user, setUser] = useState(session?.user || null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    }
-    fetchUser();
-  }, []);
+    setUser(session?.user || null);
+  }, [session]);
 
   return (
     <nav className='nav-bar'>
@@ -33,6 +31,7 @@ export default function Navbar() {
                 if (ok) {
                   try {
                     await supabase.auth.signOut();
+                    router.invalidate();
                   } catch (e) {
                     console.error('Logout failed', e);
                   }
@@ -45,7 +44,7 @@ export default function Navbar() {
         ) : (
           <div className='auth-links'>
             <Link
-              to='/login'
+              to={loginRoute.to}
               className='nav-button'
             >
               Login

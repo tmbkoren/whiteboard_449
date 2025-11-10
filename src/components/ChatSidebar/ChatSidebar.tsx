@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './ChatSidebar.css';
+import { useRouteContext } from '@tanstack/react-router';
 
 interface Message {
   id: number;
@@ -14,7 +15,12 @@ interface ChatSidebarProps {
   toggleSidebar: () => void;
 }
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ isCollapsed, toggleSidebar }) => {
+const ChatSidebar: React.FC<ChatSidebarProps> = ({
+  isCollapsed,
+  toggleSidebar,
+}) => {
+  const { session } = useRouteContext({ from: '__root__' });
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -42,7 +48,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ isCollapsed, toggleSidebar })
       id: messages.length + 1,
       text: inputValue,
       sender: 'user',
-      senderName: auth.currentUser?.email ?? 'You',
+      senderName: session?.user?.email ?? 'You',
       timestamp: new Date().toISOString(),
     };
 
@@ -58,14 +64,17 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ isCollapsed, toggleSidebar })
 
   return (
     <div className={`chat-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-      <button className="toggle-btn" onClick={toggleSidebar}>
+      <button
+        className='toggle-btn'
+        onClick={toggleSidebar}
+      >
         {isCollapsed ? '<' : '>'}
       </button>
-      <div className="sidebar-content">
-        <div className="chat-header">
+      <div className='sidebar-content'>
+        <div className='chat-header'>
           <h3>Project Chat</h3>
         </div>
-        <div className="chat-messages">
+        <div className='chat-messages'>
           {messages.map((msg) => {
             const formatted = msg.timestamp
               ? (() => {
@@ -80,28 +89,45 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ isCollapsed, toggleSidebar })
               : '';
 
             return (
-              <div key={msg.id} className={`message ${msg.sender}`}>
-                <div className="message-meta-top">
-                  <span className="meta-time">{formatted}</span>
+              <div
+                key={msg.id}
+                className={`message ${msg.sender}`}
+              >
+                <div className='message-meta-top'>
+                  <span className='meta-time'>{formatted}</span>
                 </div>
-                <div className="message-body"><p>{msg.text}</p></div>
+                <div className='message-body'>
+                  <p>{msg.text}</p>
+                </div>
               </div>
             );
           })}
         </div>
-        <div className="emoji-bar">
-          <button className="emoji-btn" aria-label="thumbs up" onClick={() => insertEmoji('👍')}>👍</button>
-          <button className="emoji-btn" aria-label="thumbs down" onClick={() => insertEmoji('👎')}>👎</button>
+        <div className='emoji-bar'>
+          <button
+            className='emoji-btn'
+            aria-label='thumbs up'
+            onClick={() => insertEmoji('👍')}
+          >
+            👍
+          </button>
+          <button
+            className='emoji-btn'
+            aria-label='thumbs down'
+            onClick={() => insertEmoji('👎')}
+          >
+            👎
+          </button>
         </div>
 
-        <div className="chat-input">
+        <div className='chat-input'>
           <input
-            type="text"
+            type='text'
             ref={inputRef}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Type a message..."
+            placeholder='Type a message...'
           />
           <button onClick={handleSendMessage}>Send</button>
         </div>

@@ -1,16 +1,13 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 import supabase from '../utils/supabase';
 
 export const Route = createFileRoute('/login')({
   component: Login,
-})
+});
 
-
-
-async function Login() {
-  async function loginWithGoogle(e) {
-    e.preventDefault()
-    //const origin = (await headers()).get('origin');
+function Login() {
+  async function loginWithGoogle(e: React.FormEvent) {
+    e.preventDefault();
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -19,27 +16,26 @@ async function Login() {
       },
     });
 
-    console.log('OAuth response:', { data, error });
-
     if (error) {
-      console.error(error);
-      //throw redirect({ to: '/login' });
+      console.error('Error logging in:', error);
+      // TODO: Show an error message to the user
+      return;
     }
 
     if (data.url) {
-      console.log('Redirecting to:', data.url);
-      //throw redirect({ to: data.url });
+      window.location.href = data.url;
     }
   }
   return (
-    <div className="account-page">
+    <div className='account-page'>
       <h2>Login</h2>
-      <form onSubmit={loginWithGoogle} className="account-form">
-      
+      <form
+        onSubmit={loginWithGoogle}
+        className='account-form'
+      >
         <button type='submit'>Login with Google</button>
       </form>
     </div>
   );
 }
 
-export default Login;
