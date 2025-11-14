@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TempRouteImport } from './routes/temp'
+import { Route as ProfileSetupRouteImport } from './routes/profile-setup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
@@ -17,6 +18,11 @@ import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 const TempRoute = TempRouteImport.update({
   id: '/temp',
   path: '/temp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileSetupRoute = ProfileSetupRouteImport.update({
+  id: '/profile-setup',
+  path: '/profile-setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -38,12 +44,14 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/profile-setup': typeof ProfileSetupRoute
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/profile-setup': typeof ProfileSetupRoute
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
 }
@@ -51,20 +59,28 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/profile-setup': typeof ProfileSetupRoute
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/temp' | '/auth/callback'
+  fullPaths: '/' | '/login' | '/profile-setup' | '/temp' | '/auth/callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/temp' | '/auth/callback'
-  id: '__root__' | '/' | '/login' | '/temp' | '/auth/callback'
+  to: '/' | '/login' | '/profile-setup' | '/temp' | '/auth/callback'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/profile-setup'
+    | '/temp'
+    | '/auth/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  ProfileSetupRoute: typeof ProfileSetupRoute
   TempRoute: typeof TempRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
 }
@@ -76,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/temp'
       fullPath: '/temp'
       preLoaderRoute: typeof TempRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile-setup': {
+      id: '/profile-setup'
+      path: '/profile-setup'
+      fullPath: '/profile-setup'
+      preLoaderRoute: typeof ProfileSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -105,6 +128,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  ProfileSetupRoute: ProfileSetupRoute,
   TempRoute: TempRoute,
   AuthCallbackRoute: AuthCallbackRoute,
 }
