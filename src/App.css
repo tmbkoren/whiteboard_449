@@ -4,16 +4,219 @@
   /* fill the viewport height minus the top nav bar so the app fits without page scrolling */
   height: calc(100vh - var(--nav-height));
   min-height: calc(100vh - var(--nav-height));
-  overflow: hidden;
+  /* allow page-level scrolling; individual containers can scroll when needed */
+  overflow: visible;
 }
 
 .whiteboard-container {
   flex-grow: 1;
   display: flex;
   transition: width 0.3s ease;
+  /* content inside whiteboard-container can scroll when taller than the area */
+  overflow: auto;
+}
+.app-container {
+  display: flex;
+  width: 100%;
+  /* fill the viewport height minus the top nav bar so the app fits without page scrolling */
+  height: calc(100vh - var(--nav-height));
+  min-height: calc(100vh - var(--nav-height));
+  /* allow page-level scrolling; individual containers can scroll when needed */
+  overflow: visible;
+}
+
+.whiteboard-container {
+  flex-grow: 1;
+  display: flex;
+  transition: width 0.3s ease;
+  /* content inside whiteboard-container can scroll when taller than the area */
+  overflow: auto;
 }
 
 .whiteboard-container .excalidraw {
   width: 100% !important;
   height: 100% !important;
 }
+
+/* Project grid styles: default to a 3-column grid and center it */
+.project-grid {
+  /* Flex layout that reliably creates 3 columns: each card gets ~33% width */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+  box-sizing: border-box;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 12px;
+  justify-content: center;
+}
+
+/* 3-column layout removed; list view is default */
+
+.project-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.12);
+  /* round the corners more to avoid pointy appearance */
+  border-radius: 14px;
+  padding: 12px;
+  /* Use flexbox for predictable two-column layout: content left, actions right */
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(16,24,40,0.04);
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.project-card:focus {
+  outline: 3px solid rgba(59,130,246,0.3);
+}
+
+.project-card__header h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+
+.project-card__body {
+  font-size: 0.9rem;
+  color: rgba(0,0,0,0.7);
+}
+
+.project-card__actions {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  align-items: center;
+}
+
+.project-card__content {
+  flex: 1 1 auto;
+}
+
+.project-card__actions {
+  /* keep actions tight and on the right */
+  margin-left: 12px;
+}
+
+.btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn--muted {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn.active {
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12) inset;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.icon-btn.active {
+  background: rgba(37,99,235,0.12);
+  color: #2563eb;
+}
+
+.project-grid { gap: 16px; }
+
+/* Card sizing for 3/2/1 columns using flex-basis */
+.project-card {
+  flex: 0 1 calc(33.333% - 12px);
+}
+
+@media (max-width: 900px) {
+  .project-card {
+    flex: 0 1 calc(50% - 12px);
+  }
+}
+
+@media (max-width: 520px) {
+  .project-card {
+    flex: 0 1 100%;
+  }
+}
+
+/* fields inside a project card laid out as a vertical grid of boxed items */
+.project-card__fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.project-card__content { flex: 1 1 auto; }
+
+@media (max-width: 520px) {
+  .project-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .project-card__actions {
+    margin-left: 0;
+    margin-top: 8px;
+    justify-content: flex-start;
+  }
+}
+
+.project-card__field {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fbfbfc;
+  border: 1px solid rgba(0,0,0,0.06);
+  outline: 1px solid rgba(0,0,0,0.03);
+  font-size: 0.95rem;
+}
+
+.project-card__title {
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.project-card:hover {
+  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+}
+
+.project-card__field:hover {
+  border-color: rgba(0,0,0,0.09);
+  outline-color: rgba(0,0,0,0.04);
+}
+
+/* small boxed container for the Projects title in the top-left */
+.projects-title-card {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(16,24,40,0.04);
+}
+
+.projects-title-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Role badges moved to route-specific stylesheet: src/routes/project.css */
+/* Removed 3-column responsive rules — list layout is the default and will adapt naturally. */
