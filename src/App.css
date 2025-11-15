@@ -4,16 +4,242 @@
   /* fill the viewport height minus the top nav bar so the app fits without page scrolling */
   height: calc(100vh - var(--nav-height));
   min-height: calc(100vh - var(--nav-height));
-  overflow: hidden;
+  /* allow page-level scrolling; individual containers can scroll when needed */
+  overflow: visible;
 }
 
 .whiteboard-container {
   flex-grow: 1;
   display: flex;
   transition: width 0.3s ease;
+  /* content inside whiteboard-container can scroll when taller than the area */
+  overflow: auto;
+}
+.app-container {
+  display: flex;
+  width: 100%;
+  /* fill the viewport height minus the top nav bar so the app fits without page scrolling */
+  height: calc(100vh - var(--nav-height));
+  min-height: calc(100vh - var(--nav-height));
+  /* allow page-level scrolling; individual containers can scroll when needed */
+  overflow: visible;
+}
+
+.whiteboard-container {
+  flex-grow: 1;
+  display: flex;
+  transition: width 0.3s ease;
+  /* content inside whiteboard-container can scroll when taller than the area */
+  overflow: auto;
 }
 
 .whiteboard-container .excalidraw {
   width: 100% !important;
   height: 100% !important;
+}
+
+/* Project grid styles */
+.project-grid {
+  /* responsive grid using auto-fit + minmax (CSS-Tricks guidance) */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px; /* slightly larger gap so thin outlines read clearly between cards */
+  align-items: start; /* align items at the top of each grid cell */
+  box-sizing: border-box; /* include padding in width calculations */
+}
+
+.project-grid.view--3col {
+  /* force 3 columns when in 3col mode; falls back via auto-fit when space is limited */
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.project-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  padding: 12px;
+  /* Use grid for internal card layout. Default layout places the action (Open)
+     on the left and the fields on the right. */
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: "footer fields";
+  gap: 8px;
+  align-items: center;
+  /* keep the soft drop shadow and add a thin inset stroke to create a clear separator */
+  box-shadow: 0 1px 2px rgba(16,24,40,0.03), inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+
+.project-card:focus {
+  outline: 3px solid rgba(59,130,246,0.3);
+}
+
+.project-card__header h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+
+.project-card__body {
+  font-size: 0.9rem;
+  color: rgba(0,0,0,0.7);
+}
+
+.project-card__footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  grid-area: footer;
+}
+
+.btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn--muted {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn.active {
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12) inset;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.icon-btn.active {
+  background: rgba(37,99,235,0.12);
+  color: #2563eb;
+}
+
+/* view toggle group with sliding indicator */
+.view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-toggle__indicator {
+  font-size: 0.85rem;
+  color: rgba(0,0,0,0.6);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.03);
+}
+
+/* list view: single column stacked layout */
+.project-grid.view--list {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+ 
+.project-grid.view--list .project-card {
+  width: 100% !important;
+  /* arrange the Open button on the left and fields on the right for list view */
+  grid-template-columns: auto 1fr !important;
+  grid-template-rows: auto !important;
+  grid-template-areas: "footer fields" !important;
+  align-items: center !important;
+}
+
+/* fields inside a project card laid out as a vertical grid of boxed items */
+.project-card__fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.project-card__fields { grid-area: fields; }
+
+.project-card__field {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fbfbfc;
+  border: 1px solid rgba(0,0,0,0.06);
+  outline: 1px solid rgba(0,0,0,0.03);
+  font-size: 0.95rem;
+}
+
+.project-card__title {
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.project-card:hover {
+  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+}
+
+.project-card__field:hover {
+  border-color: rgba(0,0,0,0.09);
+  outline-color: rgba(0,0,0,0.04);
+}
+
+/* small boxed container for the Projects title in the top-left */
+.projects-title-card {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(16,24,40,0.04);
+}
+
+.projects-title-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Role badges moved to route-specific stylesheet: src/routes/project.css */
+@media (max-width: 800px) {
+  .project-grid.view--3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* For the 3-column card layout, place the Open button under the content (stacked layout) */
+.project-grid.view--3col .project-card {
+  /* In 3-column mode place the Open button on the left and the fields on the right */
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: "footer fields";
+  align-items: center;
+}
+
+@media (max-width: 520px) {
+  .project-grid.view--3col {
+    grid-template-columns: 1fr;
+  }
+
+  /* On narrow screens restore stacked card layout so content sits above the Open button */
+  .project-grid.view--3col .project-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "fields"
+      "fields"
+      "footer";
+    align-items: start;
+  }
 }

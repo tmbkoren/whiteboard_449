@@ -1,0 +1,18 @@
+/* Role badge styles for project route - ensure these load when the route is rendered */
+.project-grid .project-card__field.project-card__role.role-owner,
+.project-grid .project-card__fields .project-card__field.project-card__role.role-owner {
+  color: #fc4b4b;
+  font-weight: 600;
+}
+
+.project-grid .project-card__field.project-card__role.role-editor,
+.project-grid .project-card__fields .project-card__field.project-card__role.role-editor {
+  color: #3e89fa;
+  font-weight: 600;
+}
+
+.project-grid .project-card__field.project-card__role.role-viewer,
+.project-grid .project-card__fields .project-card__field.project-card__role.role-viewer {
+  color: #3f4958; /* subtle gray */
+  font-weight: 600;
+}
