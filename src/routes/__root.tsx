@@ -23,13 +23,16 @@ function RootComponent() {
   const router = useRouter();
   const { session } = Route.useLoaderData();
 
+
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         console.log('User signed in or token refreshed');
-        if (session?.access_token !== router.options.context.session?.access_token) {
+        if (
+          session?.access_token !== router.options.context.session?.access_token
+        ) {
           router.invalidate();
         }
       }
@@ -49,7 +52,8 @@ function RootComponent() {
   // Redirect logic is now handled here based on loader data
   const isAuthenticated = !!session;
   const currentPath = router.state.location.pathname;
-  const isAuthPage = currentPath === '/login' || currentPath === '/auth/callback';
+  const isAuthPage =
+    currentPath === '/login' || currentPath === '/auth/callback';
 
   useEffect(() => {
     if (!isAuthenticated && !isAuthPage) {

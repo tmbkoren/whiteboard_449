@@ -23,7 +23,6 @@ export default function Navbar() {
         {user ? (
           <div className='user-block'>
             <span>Welcome, {user.email}!</span>
-            {/* Logout with confirmation */}
             <button
               className='nav-button logout-btn'
               onClick={async () => {
