@@ -38,36 +38,35 @@
   height: 100% !important;
 }
 
-/* Project grid styles */
+/* Project grid styles: default to a 3-column grid and center it */
 .project-grid {
-  /* responsive grid using auto-fit + minmax (CSS-Tricks guidance) */
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px; /* slightly larger gap so thin outlines read clearly between cards */
-  align-items: start; /* align items at the top of each grid cell */
-  box-sizing: border-box; /* include padding in width calculations */
+  /* Flex layout that reliably creates 3 columns: each card gets ~33% width */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+  box-sizing: border-box;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 12px;
+  justify-content: center;
 }
 
-.project-grid.view--3col {
-  /* force 3 columns when in 3col mode; falls back via auto-fit when space is limited */
-  grid-template-columns: repeat(3, 1fr) !important;
-}
+/* 3-column layout removed; list view is default */
 
 .project-card {
-  background: var(--card-bg, #fff);
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.12);
+  /* round the corners more to avoid pointy appearance */
+  border-radius: 14px;
   padding: 12px;
-  /* Use grid for internal card layout. Default layout places the action (Open)
-     on the left and the fields on the right. */
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto;
-  grid-template-areas: "footer fields";
-  gap: 8px;
+  /* Use flexbox for predictable two-column layout: content left, actions right */
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
   align-items: center;
-  /* keep the soft drop shadow and add a thin inset stroke to create a clear separator */
-  box-shadow: 0 1px 2px rgba(16,24,40,0.03), inset 0 0 0 1px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 8px rgba(16,24,40,0.04);
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .project-card:focus {
@@ -84,12 +83,20 @@
   color: rgba(0,0,0,0.7);
 }
 
-.project-card__footer {
+.project-card__actions {
   display: flex;
   gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
-  grid-area: footer;
+  margin: 0;
+  align-items: center;
+}
+
+.project-card__content {
+  flex: 1 1 auto;
+}
+
+.project-card__actions {
+  /* keep actions tight and on the right */
+  margin-left: 12px;
 }
 
 .btn {
@@ -132,35 +139,23 @@
   color: #2563eb;
 }
 
-/* view toggle group with sliding indicator */
-.view-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.project-grid { gap: 16px; }
+
+/* Card sizing for 3/2/1 columns using flex-basis */
+.project-card {
+  flex: 0 1 calc(33.333% - 12px);
 }
 
-.view-toggle__indicator {
-  font-size: 0.85rem;
-  color: rgba(0,0,0,0.6);
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.03);
+@media (max-width: 900px) {
+  .project-card {
+    flex: 0 1 calc(50% - 12px);
+  }
 }
 
-/* list view: single column stacked layout */
-.project-grid.view--list {
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 12px !important;
-}
- 
-.project-grid.view--list .project-card {
-  width: 100% !important;
-  /* arrange the Open button on the left and fields on the right for list view */
-  grid-template-columns: auto 1fr !important;
-  grid-template-rows: auto !important;
-  grid-template-areas: "footer fields" !important;
-  align-items: center !important;
+@media (max-width: 520px) {
+  .project-card {
+    flex: 0 1 100%;
+  }
 }
 
 /* fields inside a project card laid out as a vertical grid of boxed items */
@@ -170,7 +165,19 @@
   gap: 8px;
 }
 
-.project-card__fields { grid-area: fields; }
+.project-card__content { flex: 1 1 auto; }
+
+@media (max-width: 520px) {
+  .project-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .project-card__actions {
+    margin-left: 0;
+    margin-top: 8px;
+    justify-content: flex-start;
+  }
+}
 
 .project-card__field {
   padding: 8px;
@@ -212,34 +219,4 @@
 }
 
 /* Role badges moved to route-specific stylesheet: src/routes/project.css */
-@media (max-width: 800px) {
-  .project-grid.view--3col {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* For the 3-column card layout, place the Open button under the content (stacked layout) */
-.project-grid.view--3col .project-card {
-  /* In 3-column mode place the Open button on the left and the fields on the right */
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto;
-  grid-template-areas: "footer fields";
-  align-items: center;
-}
-
-@media (max-width: 520px) {
-  .project-grid.view--3col {
-    grid-template-columns: 1fr;
-  }
-
-  /* On narrow screens restore stacked card layout so content sits above the Open button */
-  .project-grid.view--3col .project-card {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas:
-      "fields"
-      "fields"
-      "footer";
-    align-items: start;
-  }
-}
+/* Removed 3-column responsive rules — list layout is the default and will adapt naturally. */

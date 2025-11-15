@@ -1,18 +1,68 @@
-/* Role badge styles for project route - ensure these load when the route is rendered */
-.project-grid .project-card__field.project-card__role.role-owner,
-.project-grid .project-card__fields .project-card__field.project-card__role.role-owner {
+/* Route-specific layout tweaks */
+.project-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr); /* 3 cards per row on desktop */
+  align-items: start;
+}
+
+/* Make the project grid scrollable if outer layout limits page scrolling. */
+.project-grid {
+  max-height: calc(100vh - 160px);
+  overflow: auto;
+  padding-bottom: 8px;
+}
+
+/* Responsive fallbacks */
+@media (max-width: 900px) {
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.project-card {
+  margin: 0;
+  box-sizing: border-box;
+  border: 1px solid rgba(15,23,42,0.06);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+  border-color: rgba(37,99,235,0.12);
+}
+
+/* Role badge styles for project route - target the role element directly */
+.project-grid .project-card__role.role-owner,
+.project-grid .project-card__fields .project-card__role.role-owner {
   color: #fc4b4b;
   font-weight: 600;
 }
 
-.project-grid .project-card__field.project-card__role.role-editor,
-.project-grid .project-card__fields .project-card__field.project-card__role.role-editor {
+.project-grid .project-card__role.role-editor,
+.project-grid .project-card__fields .project-card__role.role-editor {
   color: #3e89fa;
   font-weight: 600;
 }
 
-.project-grid .project-card__field.project-card__role.role-viewer,
-.project-grid .project-card__fields .project-card__field.project-card__role.role-viewer {
+.project-grid .project-card__role.role-viewer,
+.project-grid .project-card__fields .project-card__role.role-viewer {
   color: #3f4958; /* subtle gray */
   font-weight: 600;
+}
+
+/* Label styling separate from role text */
+.role-label {
+  font-weight: 600;
+  color: inherit;
+  margin-right: 6px;
 }
