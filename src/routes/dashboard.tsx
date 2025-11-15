@@ -29,7 +29,6 @@ function RouteComponent() {
     <div>
       <h1>Dashboard</h1>
       <p>Server response: {data.message}</p>
-      <p>User email: {data.user.user.email}</p>
     </div>
   );
 }
