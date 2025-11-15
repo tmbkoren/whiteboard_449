@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,
@@ -29,6 +29,8 @@ function RouteComponent() {
     <div>
       <h1>Dashboard</h1>
       <p>Server response: {data.message}</p>
+      <Link to="/projects">Go to Projects</Link>
+      <Link to="/create-project" style={{ marginLeft: '20px' }}>Create a Project</Link>
     </div>
   );
 }

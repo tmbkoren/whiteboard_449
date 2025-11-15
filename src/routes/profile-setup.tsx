@@ -2,7 +2,6 @@ import {
   createFileRoute,
   redirect,
   useLoaderData,
-  useRouteContext,
   useRouter,
 } from '@tanstack/react-router';
 import isOnboarded from '../utils/backendCalls/isOnboarded';
