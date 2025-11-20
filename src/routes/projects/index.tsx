@@ -2,6 +2,7 @@ import './project.css';
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { getProjects } from '../../utils/backendCalls/getProjects';
 import ProjectCard from './-components/ProjectCard';
+import type { UserProject } from '../../utils/types/global.types';
 
 export const Route = createFileRoute('/projects/')({
   component: RouteComponent,
@@ -12,7 +13,7 @@ export const Route = createFileRoute('/projects/')({
 });
 
 function RouteComponent() {
-  const projects = useLoaderData({ from: '/projects/' }).projects;
+  const projects = useLoaderData({ from: '/projects/' }).projects as UserProject[];
   console.log('Loaded projects:', projects);
 
   return (

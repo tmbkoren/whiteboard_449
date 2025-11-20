@@ -14,7 +14,6 @@ function RouteComponent() {
   const { session } = useLoaderData({ from: '/create-project' });
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle project creation logic here
     console.log('Creating project:', projectName);
     const res = await createProject(session, projectName);
     console.log('Project created:', res);

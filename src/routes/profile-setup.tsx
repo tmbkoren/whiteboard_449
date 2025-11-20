@@ -116,8 +116,8 @@ function RouteComponent() {
       // SUCCESS! Invalidate the router to re-run the root loader
       // which will now find the user is onboarded and redirect them.
       await router.invalidate();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: Error | unknown) {
+      setError((err as Error).message);
     } finally {
       setIsLoading(false);
     }

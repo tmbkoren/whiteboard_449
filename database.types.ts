@@ -40,18 +40,21 @@ export type Database = {
           created_at: string | null
           owner_id: string
           project_id: string
+          project_name: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           owner_id: string
           project_id?: string
+          project_name: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           owner_id?: string
           project_id?: string
+          project_name?: string
           updated_at?: string | null
         }
         Relationships: [
@@ -102,7 +105,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_project: {
+        Args: { project_name: string; project_owner: string }
+        Returns: string
+      }
     }
     Enums: {
       project_role: "owner" | "editor" | "viewer"

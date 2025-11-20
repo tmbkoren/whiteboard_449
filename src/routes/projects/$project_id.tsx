@@ -22,6 +22,7 @@ function RouteComponent() {
       await addCollaborator(session, project_id, collaborator, role);
       alert('Collaborator added successfully');
     } catch (error) {
+      console.log('Error adding collaborator:', error);
       alert('Failed to add collaborator');
     }
   };
