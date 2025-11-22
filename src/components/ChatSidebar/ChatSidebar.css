@@ -1,3 +1,9 @@
+.message.system {
+  background-color: #e3f2fd;
+  color: #222;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
 .chat-sidebar {
   position: relative;
   display: flex;

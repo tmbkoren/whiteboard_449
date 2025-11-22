@@ -149,7 +149,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             return (
               <div
                 key={msg.id}
-                className={`message user`}
+                className={`message ${msg.sender === 'user' ? 'user' : 'system'}`}
               >
                 <div className='message-meta-top' style={{flexWrap: 'wrap', wordBreak: 'break-all', maxWidth: '100%'}}>
                   <span className='meta-username' style={{whiteSpace: 'normal', wordBreak: 'break-all', maxWidth: '100%'}}>{msg.senderName ?? 'User'}</span>
