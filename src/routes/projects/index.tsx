@@ -40,6 +40,7 @@ function RouteComponent() {
             project_id={item.project_id}
             project_name={item.project_name}
             role={item.role}
+            owner_username={item.owner_username}
           />
         ))}
       </div>

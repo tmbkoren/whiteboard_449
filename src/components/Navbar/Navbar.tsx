@@ -17,6 +17,8 @@ export default function Navbar() {
     <nav className='nav-bar'>
       <div className='nav-left'>
         <Link to='/'>HOME</Link>
+        <span style={{ margin: '0 10px' }}></span>
+        <Link to='/dashboard'>DASHBOARD</Link>
       </div>
 
       <div className='nav-right'>

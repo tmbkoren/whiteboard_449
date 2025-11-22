@@ -34,6 +34,7 @@
   padding: 12px;
   background: #fff;
   transition: box-shadow 120ms ease, border-color 120ms ease;
+  text-decoration: none;
 }
 
 .project-card:hover {
