@@ -18,6 +18,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as ProjectsProject_idDashboardRouteImport } from './routes/projects/$project_id/dashboard'
+import { Route as ProjectsProject_idCreateWhiteboardRouteImport } from './routes/projects/$project_id/create-whiteboard'
+import { Route as ProjectsProject_idWhiteboardsWhiteboard_idRouteImport } from './routes/projects/$project_id/whiteboards.$whiteboard_id'
 
 const TempRoute = TempRouteImport.update({
   id: '/temp',
@@ -65,6 +67,18 @@ const ProjectsProject_idDashboardRoute =
     path: '/projects/$project_id/dashboard',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ProjectsProject_idCreateWhiteboardRoute =
+  ProjectsProject_idCreateWhiteboardRouteImport.update({
+    id: '/projects/$project_id/create-whiteboard',
+    path: '/projects/$project_id/create-whiteboard',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ProjectsProject_idWhiteboardsWhiteboard_idRoute =
+  ProjectsProject_idWhiteboardsWhiteboard_idRouteImport.update({
+    id: '/projects/$project_id/whiteboards/$whiteboard_id',
+    path: '/projects/$project_id/whiteboards/$whiteboard_id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,7 +89,9 @@ export interface FileRoutesByFullPath {
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/projects': typeof ProjectsIndexRoute
+  '/projects/$project_id/create-whiteboard': typeof ProjectsProject_idCreateWhiteboardRoute
   '/projects/$project_id/dashboard': typeof ProjectsProject_idDashboardRoute
+  '/projects/$project_id/whiteboards/$whiteboard_id': typeof ProjectsProject_idWhiteboardsWhiteboard_idRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,7 +102,9 @@ export interface FileRoutesByTo {
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/projects': typeof ProjectsIndexRoute
+  '/projects/$project_id/create-whiteboard': typeof ProjectsProject_idCreateWhiteboardRoute
   '/projects/$project_id/dashboard': typeof ProjectsProject_idDashboardRoute
+  '/projects/$project_id/whiteboards/$whiteboard_id': typeof ProjectsProject_idWhiteboardsWhiteboard_idRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,7 +116,9 @@ export interface FileRoutesById {
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/projects/$project_id/create-whiteboard': typeof ProjectsProject_idCreateWhiteboardRoute
   '/projects/$project_id/dashboard': typeof ProjectsProject_idDashboardRoute
+  '/projects/$project_id/whiteboards/$whiteboard_id': typeof ProjectsProject_idWhiteboardsWhiteboard_idRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,7 +131,9 @@ export interface FileRouteTypes {
     | '/temp'
     | '/auth/callback'
     | '/projects'
+    | '/projects/$project_id/create-whiteboard'
     | '/projects/$project_id/dashboard'
+    | '/projects/$project_id/whiteboards/$whiteboard_id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,7 +144,9 @@ export interface FileRouteTypes {
     | '/temp'
     | '/auth/callback'
     | '/projects'
+    | '/projects/$project_id/create-whiteboard'
     | '/projects/$project_id/dashboard'
+    | '/projects/$project_id/whiteboards/$whiteboard_id'
   id:
     | '__root__'
     | '/'
@@ -133,7 +157,9 @@ export interface FileRouteTypes {
     | '/temp'
     | '/auth/callback'
     | '/projects/'
+    | '/projects/$project_id/create-whiteboard'
     | '/projects/$project_id/dashboard'
+    | '/projects/$project_id/whiteboards/$whiteboard_id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,7 +171,9 @@ export interface RootRouteChildren {
   TempRoute: typeof TempRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsProject_idCreateWhiteboardRoute: typeof ProjectsProject_idCreateWhiteboardRoute
   ProjectsProject_idDashboardRoute: typeof ProjectsProject_idDashboardRoute
+  ProjectsProject_idWhiteboardsWhiteboard_idRoute: typeof ProjectsProject_idWhiteboardsWhiteboard_idRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -213,6 +241,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProject_idDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/$project_id/create-whiteboard': {
+      id: '/projects/$project_id/create-whiteboard'
+      path: '/projects/$project_id/create-whiteboard'
+      fullPath: '/projects/$project_id/create-whiteboard'
+      preLoaderRoute: typeof ProjectsProject_idCreateWhiteboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$project_id/whiteboards/$whiteboard_id': {
+      id: '/projects/$project_id/whiteboards/$whiteboard_id'
+      path: '/projects/$project_id/whiteboards/$whiteboard_id'
+      fullPath: '/projects/$project_id/whiteboards/$whiteboard_id'
+      preLoaderRoute: typeof ProjectsProject_idWhiteboardsWhiteboard_idRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,7 +267,11 @@ const rootRouteChildren: RootRouteChildren = {
   TempRoute: TempRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
+  ProjectsProject_idCreateWhiteboardRoute:
+    ProjectsProject_idCreateWhiteboardRoute,
   ProjectsProject_idDashboardRoute: ProjectsProject_idDashboardRoute,
+  ProjectsProject_idWhiteboardsWhiteboard_idRoute:
+    ProjectsProject_idWhiteboardsWhiteboard_idRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

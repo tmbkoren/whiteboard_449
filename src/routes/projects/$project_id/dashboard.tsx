@@ -2,6 +2,9 @@ import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useState } from 'react';
 import { addCollaborator } from '../../../utils/backendCalls/addCollaborator';
 import { getProjectData } from '../../../utils/backendCalls/getProjectData';
+import { getProjectWhiteboards } from '../../../utils/backendCalls/getProjectWhiteboards';
+import { createWhiteboard } from '../../../utils/backendCalls/createWhiteboard';
+import WhiteboardCard from '../-components/WhiteboardCard';
 
 export const Route = createFileRoute('/projects/$project_id/dashboard')({
   component: RouteComponent,
@@ -11,21 +14,29 @@ export const Route = createFileRoute('/projects/$project_id/dashboard')({
       context.session,
       params.project_id
     );
+    const whiteboardData = await getProjectWhiteboards(
+      context.session,
+      params.project_id
+    );
+
     console.log('Fetched project data:', projectData);
+    console.log('Fetched whiteboard data:', whiteboardData);
     return {
       session: context.session,
       project_id: params.project_id,
       projectData: projectData.project,
+      whiteboardData: whiteboardData.whiteboards,
     };
   },
 });
 
 function RouteComponent() {
-  const { session, project_id, projectData } = useLoaderData({
+  const { session, project_id, projectData, whiteboardData } = useLoaderData({
     from: '/projects/$project_id/dashboard',
   });
   const [collaborator, setCollaborator] = useState('');
   const [role, setRole] = useState<'viewer' | 'editor'>('viewer');
+  const [newWhiteboardName, setNewWhiteboardName] = useState('');
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -36,9 +47,51 @@ function RouteComponent() {
       alert('Failed to add collaborator');
     }
   };
+
+  const handleNewWhiteboard = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createWhiteboard(session, project_id, newWhiteboardName);
+      alert('Whiteboard created successfully');
+    } catch (error) {
+      console.log('Error creating whiteboard:', error);
+      alert('Failed to create whiteboard');
+    }
+    
+  };
+
   return (
     <div>
       <h2>Project name: {projectData.project_name}</h2>
+      {whiteboardData && whiteboardData.length > 0 ? (
+        <div>
+          <h3>Whiteboards:</h3>
+          <ul>
+            {whiteboardData.map((wb: any) => (
+              <WhiteboardCard
+                key={wb.whiteboard_id}
+                project_id={project_id}
+                whiteboard_id={wb.whiteboard_id}
+                whiteboard_name={wb.whiteboard_name}
+              />
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>No whiteboards found.</p>
+      )}
+      <h5>Create a new whiteboard: </h5>
+      <form onSubmit={handleNewWhiteboard}>
+        <label htmlFor='whiteboardName'>Whiteboard Name:</label>
+        <input
+          type='text'
+          id='whiteboardName'
+          name='whiteboardName'
+          value={newWhiteboardName}
+          onChange={(e) => setNewWhiteboardName(e.target.value)}
+        />
+        <button type='submit'>Create Whiteboard</button>
+      </form>
       <br />
       <h5>Add a collaborator:</h5>
       <form onSubmit={handleSubmit}>

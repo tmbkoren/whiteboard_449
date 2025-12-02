@@ -17,7 +17,7 @@ export default function ProjectCard({
       className='project-card'
       role='listitem'
       tabIndex={0}
-      to={`/projects/$project_id`}
+      to={`/projects/$project_id/dashboard`}
       params={{ project_id }}
     >
       <div className='project-card__content'>
