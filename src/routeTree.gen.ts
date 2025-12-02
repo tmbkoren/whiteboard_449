@@ -16,8 +16,8 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CreateProjectRouteImport } from './routes/create-project'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
-import { Route as ProjectsProject_idRouteImport } from './routes/projects/$project_id'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as ProjectsProject_idDashboardRouteImport } from './routes/projects/$project_id/dashboard'
 
 const TempRoute = TempRouteImport.update({
   id: '/temp',
@@ -54,16 +54,17 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   path: '/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsProject_idRoute = ProjectsProject_idRouteImport.update({
-  id: '/projects/$project_id',
-  path: '/projects/$project_id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsProject_idDashboardRoute =
+  ProjectsProject_idDashboardRouteImport.update({
+    id: '/projects/$project_id/dashboard',
+    path: '/projects/$project_id/dashboard',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,8 +74,8 @@ export interface FileRoutesByFullPath {
   '/profile-setup': typeof ProfileSetupRoute
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/projects/$project_id': typeof ProjectsProject_idRoute
   '/projects': typeof ProjectsIndexRoute
+  '/projects/$project_id/dashboard': typeof ProjectsProject_idDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -84,8 +85,8 @@ export interface FileRoutesByTo {
   '/profile-setup': typeof ProfileSetupRoute
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/projects/$project_id': typeof ProjectsProject_idRoute
   '/projects': typeof ProjectsIndexRoute
+  '/projects/$project_id/dashboard': typeof ProjectsProject_idDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -96,8 +97,8 @@ export interface FileRoutesById {
   '/profile-setup': typeof ProfileSetupRoute
   '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/projects/$project_id': typeof ProjectsProject_idRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/projects/$project_id/dashboard': typeof ProjectsProject_idDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -109,8 +110,8 @@ export interface FileRouteTypes {
     | '/profile-setup'
     | '/temp'
     | '/auth/callback'
-    | '/projects/$project_id'
     | '/projects'
+    | '/projects/$project_id/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -120,8 +121,8 @@ export interface FileRouteTypes {
     | '/profile-setup'
     | '/temp'
     | '/auth/callback'
-    | '/projects/$project_id'
     | '/projects'
+    | '/projects/$project_id/dashboard'
   id:
     | '__root__'
     | '/'
@@ -131,8 +132,8 @@ export interface FileRouteTypes {
     | '/profile-setup'
     | '/temp'
     | '/auth/callback'
-    | '/projects/$project_id'
     | '/projects/'
+    | '/projects/$project_id/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,8 +144,8 @@ export interface RootRouteChildren {
   ProfileSetupRoute: typeof ProfileSetupRoute
   TempRoute: typeof TempRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
-  ProjectsProject_idRoute: typeof ProjectsProject_idRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
+  ProjectsProject_idDashboardRoute: typeof ProjectsProject_idDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -198,18 +199,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/$project_id': {
-      id: '/projects/$project_id'
-      path: '/projects/$project_id'
-      fullPath: '/projects/$project_id'
-      preLoaderRoute: typeof ProjectsProject_idRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
       fullPath: '/auth/callback'
       preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$project_id/dashboard': {
+      id: '/projects/$project_id/dashboard'
+      path: '/projects/$project_id/dashboard'
+      fullPath: '/projects/$project_id/dashboard'
+      preLoaderRoute: typeof ProjectsProject_idDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -223,8 +224,8 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileSetupRoute: ProfileSetupRoute,
   TempRoute: TempRoute,
   AuthCallbackRoute: AuthCallbackRoute,
-  ProjectsProject_idRoute: ProjectsProject_idRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
+  ProjectsProject_idDashboardRoute: ProjectsProject_idDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

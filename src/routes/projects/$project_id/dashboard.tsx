@@ -1,18 +1,28 @@
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { useState } from 'react';
-import { addCollaborator } from '../../utils/backendCalls/addCollaborator';
+import { addCollaborator } from '../../../utils/backendCalls/addCollaborator';
+import { getProjectData } from '../../../utils/backendCalls/getProjectData';
 
-export const Route = createFileRoute('/projects/$project_id')({
+export const Route = createFileRoute('/projects/$project_id/dashboard')({
   component: RouteComponent,
   loader: async ({ context, params }) => {
     console.log('Loading project with ID:', params.project_id);
-    return { session: context.session, project_id: params.project_id };
+    const projectData = await getProjectData(
+      context.session,
+      params.project_id
+    );
+    console.log('Fetched project data:', projectData);
+    return {
+      session: context.session,
+      project_id: params.project_id,
+      projectData: projectData.project,
+    };
   },
 });
 
 function RouteComponent() {
-  const { session, project_id } = useLoaderData({
-    from: '/projects/$project_id',
+  const { session, project_id, projectData } = useLoaderData({
+    from: '/projects/$project_id/dashboard',
   });
   const [collaborator, setCollaborator] = useState('');
   const [role, setRole] = useState<'viewer' | 'editor'>('viewer');
@@ -28,9 +38,9 @@ function RouteComponent() {
   };
   return (
     <div>
-      <p>Hello "/projects/{project_id}"!</p>
+      <h2>Project name: {projectData.project_name}</h2>
       <br />
-      <h1>Add a collaborator:</h1>
+      <h5>Add a collaborator:</h5>
       <form onSubmit={handleSubmit}>
         <label htmlFor='username'>Collaborator username:</label>
         <input
