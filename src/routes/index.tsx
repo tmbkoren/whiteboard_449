@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouteContext } from '@tanstack/react-router';
-import { Route as loginRoute } from './login';
+import { Route as dashboardRoute } from './dashboard';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -13,7 +13,7 @@ function RouteComponent() {
   return (
     <div>
       <h1>Welcome to the Home Page</h1>
-      <Link to={loginRoute.to}>Login</Link>
+      <Link to={dashboardRoute.to}>Go to Dashboard</Link>
     </div>
   );
 }
