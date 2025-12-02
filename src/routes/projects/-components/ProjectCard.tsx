@@ -4,12 +4,14 @@ interface ProjectCardProps {
   project_id: string;
   project_name: string;
   role: 'owner' | 'editor' | 'viewer';
+  owner_username?: string | null;
 }
 
 export default function ProjectCard({
   project_id,
   project_name,
   role,
+  owner_username,
 }: ProjectCardProps) {
   return (
     <Link
@@ -29,6 +31,12 @@ export default function ProjectCard({
             <span className='role-label'>Role:</span>{' '}
             <span className={`project-card__role role-${role}`}>{role}</span>
           </div>
+          {owner_username && role !== 'owner' && (
+            <div className='project-card__field'>
+              <span className='owner-label'>Owner:</span>{' '}
+              <span className='project-card__owner'>{owner_username}</span>
+            </div>
+          )}
         </div>
       </div>
 

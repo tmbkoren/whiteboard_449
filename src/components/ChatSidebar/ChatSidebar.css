@@ -1,3 +1,9 @@
+.message.system {
+  background-color: #e3f2fd;
+  color: #222;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
 .chat-sidebar {
   position: relative;
   display: flex;
@@ -79,7 +85,7 @@
 .message {
   padding: 0.5rem 1rem;
   border-radius: 18px;
-  max-width: 80%;
+  width: 100%;
   word-wrap: break-word;
   display: flex;
   flex-direction: column;
@@ -99,7 +105,7 @@
   font-size: 0.75rem;
   color: rgba(0,0,0,0.6);
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
   align-items: center;
 }
