@@ -34,6 +34,7 @@ function RouteComponent() {
   const { session, project_id, projectData, whiteboardData } = useLoaderData({
     from: '/projects/$project_id/dashboard',
   });
+  const [filter, setFilter] = useState('');
   const [collaborator, setCollaborator] = useState('');
   const [role, setRole] = useState<'viewer' | 'editor'>('viewer');
   const [newWhiteboardName, setNewWhiteboardName] = useState('');
@@ -65,17 +66,38 @@ function RouteComponent() {
       <h2>Project name: {projectData.project_name}</h2>
       {whiteboardData && whiteboardData.length > 0 ? (
         <div>
-          <h3>Whiteboards:</h3>
-          <ul>
-            {whiteboardData.map((wb: any) => (
-              <WhiteboardCard
-                key={wb.whiteboard_id}
-                project_id={project_id}
-                whiteboard_id={wb.whiteboard_id}
-                whiteboard_name={wb.whiteboard_name}
-              />
-            ))}
-          </ul>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <h3 style={{ margin: 0 }}>Whiteboards:</h3>
+            <input
+              type="text"
+              placeholder="Filter whiteboards..."
+              value={filter}
+              onChange={e => setFilter(e.target.value)}
+              style={{ padding: '0.25rem 0.5rem', fontSize: '1rem' }}
+            />
+          </div>
+          {whiteboardData.filter((wb: any) =>
+            wb.whiteboard_name.toLowerCase().includes(filter.toLowerCase())
+          ).length > 0 ? (
+            <ul>
+              {whiteboardData
+                .filter((wb: any) =>
+                  wb.whiteboard_name
+                    .toLowerCase()
+                    .includes(filter.toLowerCase())
+                )
+                .map((wb: any) => (
+                  <WhiteboardCard
+                    key={wb.whiteboard_id}
+                    project_id={project_id}
+                    whiteboard_id={wb.whiteboard_id}
+                    whiteboard_name={wb.whiteboard_name}
+                  />
+                ))}
+            </ul>
+          ) : (
+            <p>No whiteboards found.</p>
+          )}
         </div>
       ) : (
         <p>No whiteboards found.</p>
