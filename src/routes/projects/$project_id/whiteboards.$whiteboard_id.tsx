@@ -54,6 +54,7 @@ function RouteComponent() {
   const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
   const excalidrawAPIRef = useRef<any>(null);
   const isUpdatingFromRemote = useRef(false);
+  const lastSentElements = useRef<string>('');
 
   // useEffect(() => {
   //   if (excalidrawAPI) {
@@ -115,13 +116,21 @@ function RouteComponent() {
         socket.close();
       };
     }
-  }, [session, whiteboard_id, excalidrawAPI]);
+  }, [session, whiteboard_id]);
 
   const handleChange = useDebouncedCallback((elements: any[], appState: any) => {
     if (isUpdatingFromRemote.current) {
       console.log('Skipping send - currently applying remote update');
       return;
     }
+    
+    // Only send if elements actually changed (not just appState/selection)
+    const elementsStr = JSON.stringify(elements);
+    if (elementsStr === lastSentElements.current) {
+      return; // No actual element changes
+    }
+    
+    lastSentElements.current = elementsStr;
     console.log('Whiteboard changed, sending', elements.length, 'elements');
     if (ws && ws.readyState === WebSocket.OPEN) {
       const message = {
