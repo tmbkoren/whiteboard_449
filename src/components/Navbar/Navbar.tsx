@@ -8,10 +8,33 @@ export default function Navbar() {
   const { session } = Route.useLoaderData();
   const router = useRouter();
   const [user, setUser] = useState(session?.user || null);
+  const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
     setUser(session?.user || null);
   }, [session]);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('username')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (data && !error) {
+            setUsername(data.username);
+          }
+        } catch (e) {
+          console.error('Error fetching username:', e);
+        }
+      }
+    };
+    
+    fetchUsername();
+  }, [user]);
 
   return (
     <nav className='nav-bar'>
@@ -24,7 +47,7 @@ export default function Navbar() {
       <div className='nav-right'>
         {user ? (
           <div className='user-block'>
-            <span>Welcome, {user.email}!</span>
+            <span>Welcome, {username ? `${username} (${user.email})` : user.email}!</span>
             <button
               className='nav-button logout-btn'
               onClick={async () => {
