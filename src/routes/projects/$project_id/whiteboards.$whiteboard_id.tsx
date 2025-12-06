@@ -4,7 +4,7 @@ import {
   useLoaderData,
 } from '@tanstack/react-router';
 import { getWhiteboardData } from '../../../utils/backendCalls/getWhiteboardData';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -52,6 +52,8 @@ function RouteComponent() {
   const [appState, setAppState] = useState<any>(whiteboardData.whiteboard.app_state || {});
   const [files, setFiles] = useState<any[]>(whiteboardData.whiteboard.files || []);
   const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
+  const excalidrawAPIRef = useRef<any>(null);
+  const isUpdatingFromRemote = useRef(false);
 
   // useEffect(() => {
   //   if (excalidrawAPI) {
@@ -75,18 +77,27 @@ function RouteComponent() {
 
       socket.onmessage = (event) => {
         console.log('Received WebSocket message:', event.data);
-        const data = JSON.parse(event.data);
-        console.log('Parsed WebSocket data:', data);
-        if (data.type === 'WHITEBOARD_UPDATE') {
-          const { elements: newElements, appState: newAppState } = data;
-          setElements(newElements);
-          setAppState(newAppState);
-          if (excalidrawAPI) {
-            excalidrawAPI.updateScene({
-              elements: newElements,
-              appState: newAppState,
-            });
+        try {
+          const data = JSON.parse(event.data);
+          console.log('Parsed WebSocket data:', data);
+          if (data.type === 'UPDATE_WHITEBOARD' && data.elements) {
+            console.log('Applying remote update with', data.elements.length, 'elements');
+            isUpdatingFromRemote.current = true;
+            const api = excalidrawAPIRef.current;
+            if (api) {
+              api.updateScene({
+                elements: data.elements,
+              });
+              console.log('Successfully applied remote update');
+            } else {
+              console.warn('Excalidraw API not ready, cannot apply update');
+            }
+            setTimeout(() => {
+              isUpdatingFromRemote.current = false;
+            }, 100);
           }
+        } catch (e) {
+          console.log('Non-JSON message or error:', e);
         }
       }
 
@@ -104,19 +115,23 @@ function RouteComponent() {
         socket.close();
       };
     }
-  }, [session, whiteboard_id]);
+  }, [session, whiteboard_id, excalidrawAPI]);
 
-  const handleChange = useDebouncedCallback(({ elements, appState }) => {
-    console.log('Whiteboard changed, elements:', elements);
-    console.log('Whiteboard changed, appState:', appState);
+  const handleChange = useDebouncedCallback((elements: any[], appState: any) => {
+    if (isUpdatingFromRemote.current) {
+      console.log('Skipping send - currently applying remote update');
+      return;
+    }
+    console.log('Whiteboard changed, sending', elements.length, 'elements');
     if (ws && ws.readyState === WebSocket.OPEN) {
       const message = {
         type: 'UPDATE_WHITEBOARD',
-        text: 'Attempting to send whiteboard update',
         elements,
-        appState,
       };
       ws.send(JSON.stringify(message));
+      console.log('Sent update to WebSocket');
+    } else {
+      console.warn('WebSocket not open, cannot send update');
     }
   }, 300);
 
@@ -126,8 +141,11 @@ function RouteComponent() {
         ...appState,
         collaborators: []
       } }}
-      excalidrawAPI={(api) => setExcalidrawAPI(api)}
-      onChange={(elements, appState) => handleChange({ elements, appState })}
+      excalidrawAPI={(api) => {
+        setExcalidrawAPI(api);
+        excalidrawAPIRef.current = api;
+      }}
+      onChange={handleChange}
     />
   );
 }
