@@ -7,6 +7,9 @@ import { getWhiteboardData } from '../../../utils/backendCalls/getWhiteboardData
 import { useEffect, useState, useRef } from 'react';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { useDebouncedCallback } from 'use-debounce';
+import ChatSidebar from '../../../components/ChatSidebar/ChatSidebar';
+import './whiteboards.$whiteboard_id.css'
+import type { Message } from '../../../utils/types/global.types';
 
 export const Route = createFileRoute(
   '/projects/$project_id/whiteboards/$whiteboard_id'
@@ -43,28 +46,32 @@ function RouteComponent() {
   const { session, project_id, whiteboard_id, whiteboardData } = useLoaderData({
     from: '/projects/$project_id/whiteboards/$whiteboard_id',
   });
-  console.log('Whiteboard Data in Component:', whiteboardData.whiteboard.app_state);
+  console.log(
+    'Whiteboard Data in Component:',
+    whiteboardData.whiteboard.app_state
+  );
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
   const [elements, setElements] = useState<any[]>(
     whiteboardData.whiteboard.elements || []
   );
-  const [appState, setAppState] = useState<any>(whiteboardData.whiteboard.app_state || {});
-  const [files, setFiles] = useState<any[]>(whiteboardData.whiteboard.files || []);
+  const [appState, setAppState] = useState<any>(
+    whiteboardData.whiteboard.app_state || {}
+  );
+  const [files, setFiles] = useState<any[]>(
+    whiteboardData.whiteboard.files || []
+  );
   const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const excalidrawAPIRef = useRef<any>(null);
   const isUpdatingFromRemote = useRef(false);
   const lastSentElements = useRef<string>('');
 
-  // useEffect(() => {
-  //   if (excalidrawAPI) {
-  //     excalidrawAPI.updateScene({
-  //       elements,
-  //       appState,
-  //       files,
-  //     });
-  //   }
-  // }, [excalidrawAPI, elements, appState, files]);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
 
   useEffect(() => {
     if (session) {
@@ -82,7 +89,11 @@ function RouteComponent() {
           const data = JSON.parse(event.data);
           console.log('Parsed WebSocket data:', data);
           if (data.type === 'UPDATE_WHITEBOARD' && data.elements) {
-            console.log('Applying remote update with', data.elements.length, 'elements');
+            console.log(
+              'Applying remote update with',
+              data.elements.length,
+              'elements'
+            );
             isUpdatingFromRemote.current = true;
             const api = excalidrawAPIRef.current;
             if (api) {
@@ -96,11 +107,13 @@ function RouteComponent() {
             setTimeout(() => {
               isUpdatingFromRemote.current = false;
             }, 100);
+          } else if (data.type === "NEW_MESSAGE") {
+            console.log('New chat message received:', data.message);
           }
         } catch (e) {
           console.log('Non-JSON message or error:', e);
         }
-      }
+      };
 
       socket.onerror = () => {
         setConnectionStatus('Error');
@@ -118,43 +131,60 @@ function RouteComponent() {
     }
   }, [session, whiteboard_id]);
 
-  const handleChange = useDebouncedCallback((elements: any[], appState: any) => {
-    if (isUpdatingFromRemote.current) {
-      console.log('Skipping send - currently applying remote update');
-      return;
-    }
-    
-    // Only send if elements actually changed (not just appState/selection)
-    const elementsStr = JSON.stringify(elements);
-    if (elementsStr === lastSentElements.current) {
-      return; // No actual element changes
-    }
-    
-    lastSentElements.current = elementsStr;
-    console.log('Whiteboard changed, sending', elements.length, 'elements');
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      const message = {
-        type: 'UPDATE_WHITEBOARD',
-        elements,
-      };
-      ws.send(JSON.stringify(message));
-      console.log('Sent update to WebSocket');
-    } else {
-      console.warn('WebSocket not open, cannot send update');
-    }
-  }, 300);
+  const handleChange = useDebouncedCallback(
+    (elements: any[], appState: any) => {
+      if (isUpdatingFromRemote.current) {
+        console.log('Skipping send - currently applying remote update');
+        return;
+      }
+
+      // Only send if elements actually changed (not just appState/selection)
+      const elementsStr = JSON.stringify(elements);
+      if (elementsStr === lastSentElements.current) {
+        return; // No actual element changes
+      }
+
+      lastSentElements.current = elementsStr;
+      console.log('Whiteboard changed, sending', elements.length, 'elements');
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const message = {
+          type: 'UPDATE_WHITEBOARD',
+          elements,
+        };
+        ws.send(JSON.stringify(message));
+        console.log('Sent update to WebSocket');
+      } else {
+        console.warn('WebSocket not open, cannot send update');
+      }
+    },
+    300
+  );
 
   return (
-    <Excalidraw
-      initialData={{ elements, appState: {
-        ...appState,
-        collaborators: []
-      } }}
-      excalidrawAPI={(api) => {
-        setExcalidrawAPI(api);
-        excalidrawAPIRef.current = api;
-      }}
-      onChange={handleChange}
-    />
+    <div
+      className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+    >
+      <div className='whiteboard-container'>
+        <Excalidraw
+          initialData={{
+            elements,
+            appState: {
+              ...appState,
+              collaborators: [],
+            },
+          }}
+          excalidrawAPI={(api) => {
+            setExcalidrawAPI(api);
+            excalidrawAPIRef.current = api;
+          }}
+          onChange={handleChange}
+        />
+      </div>
+      <ChatSidebar
+        isCollapsed={isSidebarCollapsed}
+        toggleSidebar={toggleSidebar}
+        messages={messages}
+      />
+    </div>
   );
 }

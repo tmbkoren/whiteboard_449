@@ -5,6 +5,13 @@ export interface RouterContext {
   session: Session | null;
 }
 
+export interface Message {
+  id: number;
+  text: string;
+  sender: 'user' | 'system';
+  senderName?: string;
+  timestamp?: string;
+}
 
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 

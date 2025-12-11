@@ -1,27 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatSidebar.css';
 import { useRouteContext } from '@tanstack/react-router';
+import type { Message } from '../../utils/types/global.types';
 
-interface Message {
-  id: number;
-  text: string;
-  sender: 'user' | 'system';
-  senderName?: string;
-  timestamp?: string;
-}
+
 
 interface ChatSidebarProps {
   isCollapsed: boolean;
   toggleSidebar: () => void;
+  messages: Message[];
+  
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
   isCollapsed,
   toggleSidebar,
+  messages
 }) => {
   const { session } = useRouteContext({ from: '__root__' });
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  
   const [inputValue, setInputValue] = useState('');
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
