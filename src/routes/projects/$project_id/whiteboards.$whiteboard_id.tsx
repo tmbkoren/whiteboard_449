@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { useDebouncedCallback } from 'use-debounce';
 import ChatSidebar from '../../../components/ChatSidebar/ChatSidebar';
-import './whiteboards.$whiteboard_id.css'
+import './whiteboards.$whiteboard_id.css';
 import type { Message } from '../../../utils/types/global.types';
 
 export const Route = createFileRoute(
@@ -67,7 +67,9 @@ function RouteComponent() {
   const isUpdatingFromRemote = useRef(false);
   const lastSentElements = useRef<string>('');
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(
+    whiteboardData.chat_messages || []
+  );
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -107,8 +109,8 @@ function RouteComponent() {
             setTimeout(() => {
               isUpdatingFromRemote.current = false;
             }, 100);
-          } else if (data.type === "NEW_MESSAGE") {
-            console.log('New chat message received:', data.message);
+          } else if (data.type === 'NEW_MESSAGE') {
+            setMessages((prevMessages) => [data.message, ...prevMessages]);
           }
         } catch (e) {
           console.log('Non-JSON message or error:', e);
@@ -160,6 +162,19 @@ function RouteComponent() {
     300
   );
 
+  const handleSendMessage = (message: string) => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      const messageData = {
+        type: 'NEW_MESSAGE',
+        message,
+        sender_id: session.user.id,
+      };
+      ws.send(JSON.stringify(messageData));
+    } else {
+      console.warn('WebSocket not open, cannot send message');
+    }
+  };
+
   return (
     <div
       className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}
@@ -184,6 +199,8 @@ function RouteComponent() {
         isCollapsed={isSidebarCollapsed}
         toggleSidebar={toggleSidebar}
         messages={messages}
+        sendMessage={handleSendMessage}
+        connectionStatus={connectionStatus}
       />
     </div>
   );
