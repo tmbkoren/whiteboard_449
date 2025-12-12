@@ -5,7 +5,7 @@ import {
   useRouteContext,
 } from '@tanstack/react-router';
 import App from '../App';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export const Route = createFileRoute('/temp')({
   beforeLoad: async ({context}) => {

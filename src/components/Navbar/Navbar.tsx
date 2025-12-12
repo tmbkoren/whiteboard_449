@@ -25,7 +25,7 @@ export default function Navbar() {
             .single();
           
           if (data && !error) {
-            setUsername(data.username);
+            setUsername((data as any).username ?? null);
           }
         } catch (e) {
           console.error('Error fetching username:', e);

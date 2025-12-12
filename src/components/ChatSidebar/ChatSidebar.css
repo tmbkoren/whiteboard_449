@@ -76,7 +76,7 @@
   padding: 1rem;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 0.75rem;
   /* allow the messages container to shrink correctly inside a flex column parent */
   min-height: 0;
