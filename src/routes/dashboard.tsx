@@ -9,7 +9,7 @@ export const Route = createFileRoute('/dashboard')({
   },
   loader: async ({ context }) => {
     console.log('Dashboard loader context:', context.session?.access_token);
-    const res = await fetch('http://localhost:8000/protected-route', {
+    const res = await fetch('/api/protected-route', {
       headers: {
         Authorization: `Bearer ${context.session?.access_token}`,
       },

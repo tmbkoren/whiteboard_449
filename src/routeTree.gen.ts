@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TempRouteImport } from './routes/temp'
 import { Route as ProfileSetupRouteImport } from './routes/profile-setup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -21,11 +20,6 @@ import { Route as ProjectsProject_idDashboardRouteImport } from './routes/projec
 import { Route as ProjectsProject_idCreateWhiteboardRouteImport } from './routes/projects/$project_id/create-whiteboard'
 import { Route as ProjectsProject_idWhiteboardsWhiteboard_idRouteImport } from './routes/projects/$project_id/whiteboards.$whiteboard_id'
 
-const TempRoute = TempRouteImport.update({
-  id: '/temp',
-  path: '/temp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProfileSetupRoute = ProfileSetupRouteImport.update({
   id: '/profile-setup',
   path: '/profile-setup',
@@ -86,7 +80,6 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/profile-setup': typeof ProfileSetupRoute
-  '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$project_id/create-whiteboard': typeof ProjectsProject_idCreateWhiteboardRoute
@@ -99,7 +92,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/profile-setup': typeof ProfileSetupRoute
-  '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/projects': typeof ProjectsIndexRoute
   '/projects/$project_id/create-whiteboard': typeof ProjectsProject_idCreateWhiteboardRoute
@@ -113,7 +105,6 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/profile-setup': typeof ProfileSetupRoute
-  '/temp': typeof TempRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/projects/': typeof ProjectsIndexRoute
   '/projects/$project_id/create-whiteboard': typeof ProjectsProject_idCreateWhiteboardRoute
@@ -128,7 +119,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/profile-setup'
-    | '/temp'
     | '/auth/callback'
     | '/projects'
     | '/projects/$project_id/create-whiteboard'
@@ -141,7 +131,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/profile-setup'
-    | '/temp'
     | '/auth/callback'
     | '/projects'
     | '/projects/$project_id/create-whiteboard'
@@ -154,7 +143,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/profile-setup'
-    | '/temp'
     | '/auth/callback'
     | '/projects/'
     | '/projects/$project_id/create-whiteboard'
@@ -168,7 +156,6 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   ProfileSetupRoute: typeof ProfileSetupRoute
-  TempRoute: typeof TempRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ProjectsProject_idCreateWhiteboardRoute: typeof ProjectsProject_idCreateWhiteboardRoute
@@ -178,13 +165,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/temp': {
-      id: '/temp'
-      path: '/temp'
-      fullPath: '/temp'
-      preLoaderRoute: typeof TempRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/profile-setup': {
       id: '/profile-setup'
       path: '/profile-setup'
@@ -264,7 +244,6 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   ProfileSetupRoute: ProfileSetupRoute,
-  TempRoute: TempRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   ProjectsProject_idCreateWhiteboardRoute:

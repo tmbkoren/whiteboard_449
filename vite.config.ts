@@ -18,7 +18,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: `https://whiteboard449backend-production.up.railway.app`,
         changeOrigin: true,
       },
     },

@@ -90,7 +90,7 @@ function RouteComponent() {
       // fetch current user's username for proper chat rendering
 
       const socket = new WebSocket(
-        `ws://localhost:8000/ws/whiteboard/${whiteboard_id}/${session?.user?.id}`
+        `ws://${import.meta.env.VITE_BACKEND_URL || 'localhost:8000'}/ws/whiteboard/${whiteboard_id}/${session?.user?.id}`
       );
 
       socket.onopen = () => {
