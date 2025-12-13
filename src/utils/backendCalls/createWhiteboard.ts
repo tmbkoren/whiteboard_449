@@ -9,7 +9,7 @@ export const createWhiteboard = async (
   if (!session) {
     throw new Error('User is not authenticated');
   }
-  const res = await fetch('/api/create-whiteboard', {
+  await fetch('/api/create-whiteboard', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

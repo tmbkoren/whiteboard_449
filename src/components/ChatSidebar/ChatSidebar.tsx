@@ -1,14 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './ChatSidebar.css';
 import type { Message } from '../../utils/types/global.types';
-import { useRouteContext } from '@tanstack/react-router';
+// import { useRouteContext } from '@tanstack/react-router';
 
 interface ChatSidebarProps {
   isCollapsed: boolean;
-  connectionStatus: string;
+  connectionStatus?: string;
   toggleSidebar: () => void;
-  messages: Message[];
-  sendMessage: (message: string) => void;
+  messages?: Message[];
+  sendMessage?: (message: string) => void;
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
@@ -18,9 +18,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   messages,
   sendMessage,
 }) => {
-  const { session } = useRouteContext({ from: '__root__' });
+  // Access session if needed for future comparisons
+  // const { session } = useRouteContext({ from: '__root__' });
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const insertEmoji = (emoji: string) => {
     // append emoji at the end of current input and focus
@@ -39,6 +41,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   };
 
   const handleSendMessage = () => {
+    if (!sendMessage) return;
     sendMessage(inputValue);
     setInputValue('');
   };
@@ -48,6 +51,13 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
       handleSendMessage();
     }
   };
+
+  // Auto-scroll to the bottom when messages update
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages?.length]);
 
   return (
     <div className={`chat-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -72,8 +82,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             </span>
           </h3>
         </div>
-        <div className='chat-messages'>
-          {messages.map((msg) => {
+        <div className='chat-messages' ref={messagesContainerRef}>
+          {(messages ?? []).map((msg) => {
             const formatted = msg.timestamp
               ? (() => {
                   const d = new Date(msg.timestamp!);
@@ -89,7 +99,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             return (
               <div
                 key={msg.id}
-                className={`message ${msg.sender_id === session.user.id ? 'user' : 'system'}`}
+                className={`message ${msg.sender === 'user' ? 'user' : 'system'}`}
               >
                 <div
                   className='message-meta-top'
@@ -107,13 +117,13 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       maxWidth: '100%',
                     }}
                   >
-                    {msg.sender_username ?? 'User'}
+                    {(msg.senderName ?? (msg as any).sender_username ?? 'User')}
                   </span>
                   <span style={{ margin: '0 8px' }}>|</span>
                   <span className='meta-time'>{formatted}</span>
                 </div>
                 <div className='message-body'>
-                  <p>{msg.content}</p>
+                  <p>{(msg as any).text ?? (msg as any).content ?? ''}</p>
                 </div>
               </div>
             );
