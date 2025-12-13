@@ -10,7 +10,7 @@ export interface Message {
   text: string;
   sender: 'user' | 'system';
   senderName?: string;
-  timestamp?: string;
+  sent_at?: string;
 }
 
 export type Profile = Database['public']['Tables']['profiles']['Row'];

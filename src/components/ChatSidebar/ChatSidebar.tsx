@@ -84,9 +84,10 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </div>
         <div className='chat-messages' ref={messagesContainerRef}>
           {(messages ?? []).map((msg) => {
-            const formatted = msg.timestamp
+            console.log('Rendering message:', msg);
+            const formatted = msg.sent_at
               ? (() => {
-                  const d = new Date(msg.timestamp!);
+                  const d = new Date(msg.sent_at!);
                   // numeric month/day (no year) and 24-hour time HH:MM, no seconds
                   const m = String(d.getMonth() + 1); // 1-12
                   const day = String(d.getDate());
